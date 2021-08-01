@@ -1,0 +1,15 @@
+/packages
+/x64
+/Release
+/Debug
+
+/.vs
+
+*.filters
+*.vcxproj
+*.config
+*.user
+*.sln
+*.txt
+*.csv
+
