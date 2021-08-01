@@ -1,25 +1,25 @@
-#ifndef EllipsCurve_H
+п»ї#ifndef EllipsCurve_H
 #define EllipsCurve_H
 
 #include "Curve.h"
 
-// класс, реализующий эллипс
+// РєР»Р°СЃСЃ, СЂРµР°Р»РёР·СѓСЋС‰РёР№ СЌР»Р»РёРїСЃ
 class EllipsCurve : public  Curve {
 
 private:
-	double a;   // полуось 
-	double b;   // полуось
-	double w;   // круговая частота
-	double phi; // начальная фаза
+	double a;   // РїРѕР»СѓРѕСЃСЊ 
+	double b;   // РїРѕР»СѓРѕСЃСЊ
+	double w;   // РєСЂСѓРіРѕРІР°СЏ С‡Р°СЃС‚РѕС‚Р°
+	double phi; // РЅР°С‡Р°Р»СЊРЅР°СЏ С„Р°Р·Р°
 
 public:
 	EllipsCurve(double t_begin_, double t_end_, double a_, double b_,
 		double w_, double phi_) : Curve(t_begin_, t_end_), a(a_), b(b_), w(w_), phi(phi_) {};
 
-	// метод, замещающий базовый метод get_point()
+	// РјРµС‚РѕРґ, Р·Р°РјРµС‰Р°СЋС‰РёР№ Р±Р°Р·РѕРІС‹Р№ РјРµС‚РѕРґ get_point()
 	virtual Point get_point(double t);
 
-	// дополнительные методы, использующие аналитически вычисленые значения производных.
+	// РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹, РёСЃРїРѕР»СЊР·СѓСЋС‰РёРµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРё РІС‹С‡РёСЃР»РµРЅРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РїСЂРѕРёР·РІРѕРґРЅС‹С….
 	virtual double get_first_derivative_analytical(double t);
 	virtual double get_second_derivative_analytical(double t);
 	virtual std::string get_name();

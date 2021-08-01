@@ -60,13 +60,13 @@ double Curve::get_first_derivative(double t, double h) {
 // вычисление второй производной кривой в точке t с приращением конечной разности функции на шаг h
 double Curve::get_second_derivative(double t, double h) {
 
-    // первая производная каждой функии y(t) и x(t) в точке t
+    // первая производная каждой функции y(t) и x(t) в точке t
     std::pair<double, double> P1 = first_derivative(t, h);
     
     // вторая производная каждой функии y(t) и x(t) в точке t
     std::pair<double, double> P2 = second_derivative(t, h);
 
-    // вычисление второй производной параметрически заданной кривой по формуле
+    // вычисление второй производной кривой, заданной параметрически, по формуле
     // (x'(t)*y''(t) - y'(t)*x''(t)) / x'(t)^3
     double A = P1.first  * P2.second;
     double B = P1.second * P2.first;
@@ -85,10 +85,10 @@ double Curve::get_length(double eps, double h) {
     double error = 1e10;       // начальное значение ошибки, заведомо большее входного значния eps
     unsigned long long n = 10; // начальное небольшое количество узлов сетки
 
-    double simpson_integral;   // значение интеграла, посчитаное методом симпсона
-    double old_value = Integrate_curve(n, h); // пердыдущее значение интеграла, вычисленное на сетке n
+    double simpson_integral;   // значение интеграла, вычисленное методом симпсона
+    double old_value = Integrate_curve(n, h); // предыдущее значение интеграла, вычисленное на сетке n
 
-    // точность вычисления интеграла согласно правилу Рунге (teta = 15 для метода симпсона)
+    // точность вычисления интеграла согласно правилу Рунге (teta = 15 для метода Симпсона)
     while (error/15 > eps) {
         n *= 2; // удвоение узлов сетки
         simpson_integral = Integrate_curve(n, h);  // значение интеграла на удвоенной сетке
@@ -106,7 +106,7 @@ double Curve::get_length(double eps, double h) {
 // 1/h - количество анализируемых точек вдоль кривой
 double Curve::get_projection(Point P, double eps, double h) {
     
-    // в случае отсутсвия найденной точки проекции производится возврат NAN
+    // в случае отсутствия найденной точки проекции производится возврат NAN
     double projection = NAN;
 
     double t = t_begin;                  // начальное значение параметра t
@@ -173,7 +173,7 @@ std::pair<double, double> Curve::second_derivative(double t, double h) {
 }
 
 // Вычисление интеграла от sqrt(x'(t)^2 + y'(t)^2) по всей области определения параметра t (от t_begin до t_end).
-// Значение данного интерала равняется длине кривой.
+// Значение данного интеграла равняется длине кривой.
 // n - количество точек расчета интеграла.
 // h - шаг при вычислении конечной разности функции.
 double Curve::Integrate_curve(unsigned long long n, double h){
@@ -189,13 +189,13 @@ double Curve::Integrate_curve(unsigned long long n, double h){
         x1 = t_begin + step * width;       
         x2 = t_begin + (step + 1) * width;
 
-        // первая производная каждой функии в точке x1
+        // первая производная каждой функции в точке x1
         std::pair<double, double> D1 = first_derivative(x1, h);
 
-        // первая производная каждой функии в точке 0.5 * (x1 + x2)
+        // первая производная каждой функции в точке 0.5 * (x1 + x2)
         std::pair<double, double> D2 = first_derivative(0.5*(x1 + x2), h);
 
-        // первая производная каждой функии в точке x2
+        // первая производная каждой функции в точке x2
         std::pair<double, double> D3 = first_derivative(x2, h);
 
         // значения целевой функции в узлах сетки
@@ -211,16 +211,16 @@ double Curve::Integrate_curve(unsigned long long n, double h){
     return simpson_integral;
 }
 
-// вычисление угла визирования из точки P на точку кривой, соответсвующей параметру t
+// вычисление угла визирования из точки P на точку кривой, соответствующей параметру t
 double Curve::SightAngle(double t, Point P) {
-    // получение точки кривой, соответсвующей заданному параметру t
+    // получение точки кривой, соответствующей заданному параметру t
     Point T = get_point(t);
 
     // возврат значения угла между точкой визирования P и точкой кривой T
     return atan( (P.x2 - T.x2) / (P.x1 - T.x1) );
 }
 
-// вычисление разности между уголом визирования из точки P на точку кривой, соответсвующей параметру t,
+// вычисление разности между углом визирования из точки P на точку кривой, соответствующей параметру t,
 // и нормалью кривой в точке t; h - шаг при вычислении конечной разности функции. 
 double Curve::ScanFunction(double t, Point P, double h) {
     double Sight = SightAngle(t, P);                        // угол визирования на кривую в точке t

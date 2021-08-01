@@ -1,24 +1,24 @@
-#ifndef CosCurve_H
+п»ї#ifndef CosCurve_H
 #define CosCurve_H
 
 #include "Curve.h"
 
-// класс, реализующий функцию cos()
+// РєР»Р°СЃСЃ, СЂРµР°Р»РёР·СѓСЋС‰РёР№ С„СѓРЅРєС†РёСЋ cos()
 class CosCurve : public Curve
 {
 private:
-	double ampl; // амплитуда 
-	double w;	 // круговая частота
-	double phi;  // начальная фаза
+	double ampl; // Р°РјРїР»РёС‚СѓРґР° 
+	double w;	 // РєСЂСѓРіРѕРІР°СЏ С‡Р°СЃС‚РѕС‚Р°
+	double phi;  // РЅР°С‡Р°Р»СЊРЅР°СЏ С„Р°Р·Р°
 
 public:
 	CosCurve(double t_begin_, double t_end_, double ampl_ = 1, double w_ = 1, double phi_ = 1) : Curve(t_begin_, t_end_),
 		ampl(ampl_), w(w_), phi(phi_) {};
 
-	// метод, замещающий базовый метод get_point()
+	// РјРµС‚РѕРґ, Р·Р°РјРµС‰Р°СЋС‰РёР№ Р±Р°Р·РѕРІС‹Р№ РјРµС‚РѕРґ get_point()
 	Point get_point(double t);
 
-	// дополнительные методы, использующие аналитически вычисленые значения производных.
+	// РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹, РёСЃРїРѕР»СЊР·СѓСЋС‰РёРµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРё РІС‹С‡РёСЃР»РµРЅРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РїСЂРѕРёР·РІРѕРґРЅС‹С….
 	double get_first_derivative_analytical(double t);
 	double get_second_derivative_analytical(double t);
 	std::string get_name();

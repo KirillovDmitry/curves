@@ -1,9 +1,9 @@
-#ifndef LineCurve_H
+п»ї#ifndef LineCurve_H
 #define LineCurve_H
 
 #include "Curve.h"
 
-// класс, реализующий линейную функцию
+// РєР»Р°СЃСЃ, СЂРµР°Р»РёР·СѓСЋС‰РёР№ Р»РёРЅРµР№РЅСѓСЋ С„СѓРЅРєС†РёСЋ
 class LineCurve : public Curve
 {
 private:
@@ -14,10 +14,10 @@ public:
 	LineCurve(double t_begin_, double t_end_, double k_ = 1, double b_ = 0) : Curve(t_begin_, t_end_),
 		k(k_), b(b_) {};
 
-	// метод, замещающий базовый метод get_point()
+	// РјРµС‚РѕРґ, Р·Р°РјРµС‰Р°СЋС‰РёР№ Р±Р°Р·РѕРІС‹Р№ РјРµС‚РѕРґ get_point()
 	Point get_point(double t);
 
-	// дополнительные методы, использующие аналитически вычисленые значения.
+	// РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹, РёСЃРїРѕР»СЊР·СѓСЋС‰РёРµ Р°РЅР°Р»РёС‚РёС‡РµСЃРєРё РІС‹С‡РёСЃР»РµРЅРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ.
 	double get_first_derivative_analytical(double t);
 	double get_second_derivative_analytical(double t);
 	double get_length_analytical();

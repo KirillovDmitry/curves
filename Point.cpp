@@ -1,6 +1,6 @@
 #include "Point.h"
 
-// арифметические операции для типа Point
+// Р°СЂРёС„РјРµС‚РёС‡РµСЃРєРёРµ РѕРїРµСЂР°С†РёРё РґР»СЏ С‚РёРїР° Point
 
 Point operator+(Point a, Point b) {
 	return Point(a.x1 + b.x1, a.x2 + b.x2);
