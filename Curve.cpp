@@ -6,6 +6,37 @@ Point Curve::get_point(double t) {
     return Point(t,t);
 }
 
+std::pair<Vector, Vector>  Curve::get_local(double t) {
+
+    Vector normal, tangent;
+
+    // начальная точка векторов нормали и касательной
+    Point P_begin = get_point(t);
+
+    // первая производная кривой в точке t
+    std::pair<double, double> der = first_derivative(t); 
+    
+    // угол наклона нормали в точке кривой, соответствующей параметру t 
+    double alpha1 = atan(-der.first / der.second);
+
+    // вычисление конечной точки вектора нормали
+    Point P_normal_end(P_begin.x1 + cos(alpha1), P_begin.x2 + sin(alpha1) );
+
+    // формирование вектора нормали
+    normal = Vector(P_begin, P_normal_end);
+
+    // угол наклона касательной в точке кривой, соответствующей параметру t 
+    double alpha2 = atan(der.second / der.first);
+
+    // вычисление конечной точки вектора касательной
+    Point P_tangent_end(P_begin.x1 + cos(alpha2), P_begin.x2 + sin(alpha2));
+
+    // формирование вектора касательной
+    tangent = Vector(P_begin, P_tangent_end);
+
+    return std::make_pair(normal, tangent);
+}
+
 // выдача информации об области определения параметра кривой t.
 // возвращаемое значение - пара начального и конечного значения параметра t.
 std::pair<double, double> Curve::get_param() {
