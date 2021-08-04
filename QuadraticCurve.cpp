@@ -2,17 +2,12 @@
 
 // вычисление значения функции, соответствующего параметру t
 Point QuadraticCurve::get_point(double t) {
-	return Point(t, a*t*t + b*t + c);
+	return local_point(point(t));
 }
 
-// вычисление значения первой производной аналитически
-double QuadraticCurve::get_first_derivative_analytical(double t) {
-	return 2*a*t + b;
-}
-
-// вычисление значения второй производной аналитически
-double QuadraticCurve::get_second_derivative_analytical(double t) {
-	return 2*a;
+// вычисление значения функции, соответствующего параметру t в декартовой системе координат
+Point QuadraticCurve::point(double t) {
+	return Point((t, a*t*t + b*t + c));
 }
 
 // метод, возвращающий наименование кривой.

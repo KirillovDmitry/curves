@@ -1,5 +1,6 @@
 #include <iostream>
 #include <functional>
+#include <cassert>
 #include <vector>
 #include "LineCurve.h" 
 #include "SinCurve.h" 
@@ -14,12 +15,13 @@ int main()
     Curves.reserve(10);
 
     // создание кривых разных типов и занесение их в вектор
-    Curves.push_back(std::make_shared<LineCurve>(LineCurve(0, 3, 1, 1)) );
-    Curves.push_back(std::make_shared<QuadraticCurve>(QuadraticCurve(0, 3, 4, 0, 0)));
-    Curves.push_back(std::make_shared<SinCurve>(SinCurve(0, 3, 1, 1, 0)));
-    Curves.push_back(std::make_shared<CosCurve>(CosCurve(0, 3, 1, 1, 0)));
-    Curves.push_back(std::make_shared<EllipsCurve>(EllipsCurve(0, 3, 1, 2, 1, 0)));
-    Curves.push_back(std::make_shared<CircuitCurve>(CircuitCurve(0, 3, 1, 1, 0)));
+    type_of_coordinate_system CS_1(cartesian);
+    Curves.push_back(std::make_shared<LineCurve>(LineCurve(CS_1, 1, 3, 1, 0)) );
+    Curves.push_back(std::make_shared<QuadraticCurve>(QuadraticCurve(CS_1, 1, 3, 4, 0, 0)));
+    Curves.push_back(std::make_shared<SinCurve>(SinCurve(CS_1, 1, 3, 1, 1, 0)));
+    Curves.push_back(std::make_shared<CosCurve>(CosCurve(CS_1, 1, 3, 1, 1, 0)));
+    Curves.push_back(std::make_shared<EllipsCurve>(EllipsCurve(CS_1, 1, 3, 1, 2, 1, 0)));
+    Curves.push_back(std::make_shared<CircuitCurve>(CircuitCurve(CS_1, 1, 3, 1, 1, 0)));
 
     double t = 0.5;
 
@@ -45,14 +47,19 @@ int main()
     
     std::cout << "---------------" << std::endl;
 
+    std::vector<double> Lengths_decart;
+    Lengths_decart.reserve(10);
+    Curves.reserve(10);
     // вывод в консоль значения длины кривой
-    for (unsigned int i = 0; i < Curves.size(); ++i)
+    for (unsigned int i = 0; i < Curves.size(); ++i) {
+        Lengths_decart.push_back(Curves[i]->get_length());
         std::cout << "The value of curve's length '" << Curves[i]->get_name() <<
-        "' is equal to " << Curves[i]->get_length() << std::endl;
+            "' is equal to " << Lengths_decart[i] << std::endl;
+    }
 
     std::cout << "---------------" << std::endl;
 
-    Point P(2, 2);
+    Point P(2, 3);
     // вывод в консоль проекции точки P на кривую
     for (unsigned int i = 0; i < Curves.size(); ++i)
         std::cout << "Projection of a point " << "(" << P.x1 << ", " << P.x2 << ")" <<
@@ -63,20 +70,40 @@ int main()
 
     std::cout << "---------------" << std::endl;
 
-    // Проверка функции выдачи локальной системы координат.
-    // Для окружности с центром в (0,0) и радиусом 1 в точках (0 + n*PI/4) выводится локальная система координат.
+    // Тестирование сферической системы координат.
+    // Создание кривых в сферической системе координат с параметрами, соответсвующими аналогичным кривым
+    // в декартовой системе координат. Так как конкретная кривая не зависит от типа системы координат,
+    // то ее длина должна быть одинаковой в любых системах координат. Справедливоть данного утверждения
+    // и проверяется приведенным ниже тестом.
+       
+    std::cout << std::endl;
+    std::cout << "============================" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Spherical system testing: " << std::endl;
+    type_of_coordinate_system CS_2(spherical);
+    std::vector<std::shared_ptr<Curve>> Curves_spherical;
+    
+    Curves_spherical.reserve(10);
 
-    CircuitCurve C = CircuitCurve(0, 3, 1, 1, 0);
+    Curves_spherical.push_back(std::make_shared<LineCurve>(LineCurve(CS_2, 1, 3, 1, 0)));
+    Curves_spherical.push_back(std::make_shared<QuadraticCurve>(QuadraticCurve(CS_2, 1, 3, 4, 0, 0)));
+    Curves_spherical.push_back(std::make_shared<SinCurve>(SinCurve(CS_2, 1, 3, 1, 1, 0)));
+    Curves_spherical.push_back(std::make_shared<CosCurve>(CosCurve(CS_2, 1, 3, 1, 1, 0)));
+    Curves_spherical.push_back(std::make_shared<EllipsCurve>(EllipsCurve(CS_2, 1, 3, 1, 2, 1, 0)));
+    Curves_spherical.push_back(std::make_shared<CircuitCurve>(CircuitCurve(CS_2, 1, 3, 1, 1, 0)));
+    
+    std::vector<double> Lengths_spherical;
+    
+    // вывод в консоль значения длины кривой в сферической системе координат
+    for (unsigned int i = 0; i < Curves_spherical.size(); ++i) {
+        Lengths_spherical.push_back( Curves_spherical[i]->get_length());
+        std::cout << "The value of curve's length '" << Curves_spherical[i]->get_name() <<
+            "' is equal to " << Lengths_spherical[i] << std::endl;
 
-    std::pair<Vector, Vector> N = C.get_local(0);
-    for (double alpha = 0; alpha <= 2 * PI; alpha += PI / 4) {
-        std::cout << "alpha = " << alpha << std::endl;
-        N = C.get_local(alpha);
-        std::cout << "Normal = (" << N.first.begin.x1 << "; " << N.first.begin.x2 << "), " <<
-            " (" << N.first.end.x1 << ";" << N.first.end.x2 << ") " << std::endl;
-        std::cout << "Tangent = (" << N.second.begin.x1 << "; " << N.second.begin.x2 << "), " <<
-            " (" << N.second.end.x1 << ";" << N.second.end.x2 << ") " << std::endl;
-        std::cout << "---------------" << std::endl;
+        // проверка на равенство длин кривых в разных системах координат
+        assert(abs(Lengths_spherical[i] - Lengths_decart[i]) < 1e-4);
     }
-
+   
+    std::cout << "---------------" << std::endl;
+    
 }

@@ -1,10 +1,33 @@
 ﻿#include "Curve.h"
 
 // вычисление точки кривой, соответствующей заданному параметру t 
-Point Curve::get_point(double t) {
-	// по умолчанию в качестве кривой используется прямая y = x
-    return Point(t,t);
+Point Curve::get_point(double t) {	
+    return local_point(point(t));
 }
+
+// вычисление точки кривой, соответствующей заданному параметру t в декартовой системе координат
+Point Curve::point(double t) {
+    // по умолчанию в качестве кривой используется прямая y = x
+    return Point(t, t);
+}
+
+// преобразование в локальную систему координат
+Point Curve::local_point(Point P) {
+    Point ans(P);
+
+    // осуществление преобразования в случае сферической сисетемы координат 
+    if (coordinate_system == spherical) {
+        ans.x1 = sqrt(P.x1*P.x1 + P.x2*P.x2);
+        if (P.x1 == 0)
+            P.x1 = std::numeric_limits<double>::min();
+
+        ans.x2 = atan(P.x2 / P.x1);
+    }
+
+    return ans;
+}
+
+
 
 std::pair<Vector, Vector>  Curve::get_local(double t) {
 
@@ -45,7 +68,8 @@ std::pair<double, double> Curve::get_param() {
 
 // вычисление первой производной кривой в точке t с приращением конечной разности функции на шаг h
 double Curve::get_first_derivative(double t, double h) {
-    // вычисление производных одномерных функций y(t) и x(t) в точке t
+  
+   // вычисление производных одномерных функций y(t) и x(t) в точке t
     std::pair<double, double> P = first_derivative(t, h);
     
     // если производная  x'(t) в точке t равняется 0, при последующем делении на ноль сгенерируется inf.
@@ -55,6 +79,20 @@ double Curve::get_first_derivative(double t, double h) {
     
     // производная в декартовой системе координат равняется y'/x' (дифференцирование производится по параметру t)
     return P.second / P.first; // возможно деление на ноль. необходимо бросить исключение, либо сформировать код ошибки
+    
+ /*
+    // вычисление производных одномерных функций y(t) и x(t) в точке t
+    double P1 = first_derivative_1(t, h);
+    double P2 = first_derivative_2(t, h);
+
+    // если производная  x'(t) в точке t равняется 0, при последующем делении на ноль сгенерируется inf.
+    // произведем замену нуля на очень малое число.
+    if (P1 == 0)
+        P1 = std::numeric_limits<double>::min();
+
+    // производная в декартовой системе координат равняется y'/x' (дифференцирование производится по параметру t)
+    return P2 / P1; // возможно деление на ноль. необходимо бросить исключение, либо сформировать код ошибки
+*/
 }
 
 // вычисление второй производной кривой в точке t с приращением конечной разности функции на шаг h
@@ -105,7 +143,7 @@ double Curve::get_length(double eps, double h) {
 // eps - точность равенства нулю целевой (минимизируемой) функции;
 // 1/h - количество анализируемых точек вдоль кривой
 double Curve::get_projection(Point P, double eps, double h) {
-    
+
     // в случае отсутствия найденной точки проекции производится возврат NAN
     double projection = NAN;
 
@@ -137,23 +175,24 @@ std::pair<double, double> Curve::first_derivative(double t, double h) {
     // https://ru.wikipedia.org/wiki/Коэффициенты_формул_численного_дифференцирования
 
     Point P(0, 0);
+    
     // если параметр t не выходит из-за границ области определения используются симметричные коэффициенты
     if ((t - 3*h) > t_begin && (t + 3*h) < t_end) 
-        P = (1/280.*get_point(t - 4*h) - 4/105.*get_point(t - 3*h) + 1/5.*get_point(t - 2*h) - 4/5.*get_point(t - h)
-            + 4/5.*get_point(t + h) - 1/5.*get_point(t + 2*h) + 4/105.*get_point(t + 3*h) - 1/280.*get_point(t + 4*h)) / h;
+        P = (1/280.*point(t - 4*h) - 4/105.*point(t - 3*h) + 1/5.*point(t - 2*h) - 4/5.*point(t - h)
+            + 4/5.*point(t + h) - 1/5.*point(t + 2*h) + 4/105.*point(t + 3*h) - 1/280.*point(t + 4*h)) / h;
    
     // если параметр t выходит за левую границу области определения используются коэффициенты вперед
     else if ((t + 6*h) < t_end)
-        P = (-49/20.*get_point(t) + 6.*get_point(t + h) - 15/2.*get_point(t + 2*h) + 20/3.*get_point(t + 3*h)
-            - 15/4.*get_point(t + 4*h) + 6/5.*get_point(t + 5*h) - 1/6.*get_point(t + 6*h)) / h;
+        P = (-49/20.*point(t) + 6.*point(t + h) - 15/2.*point(t + 2*h) + 20/3.*point(t + 3*h)
+            - 15/4.*point(t + 4*h) + 6/5.*point(t + 5*h) - 1/6.*point(t + 6*h)) / h;
 
     // если параметр t выходит за правую границу области определения используются коэффициенты назад
     else if ((t - 6*h) > t_begin)
-        P = (49/20.*get_point(t) - 6.*get_point(t - h) + 15/2.*get_point(t - 2*h) - 20/3.*get_point(t - 3*h)
-            + 15/4.*get_point(t - 4*h) - 6/5.*get_point(t - 5*h) + 1/6.*get_point(t - 6*h)) / h;
+        P = (49/20.*point(t) - 6.*point(t - h) + 15/2.*point(t - 2*h) - 20/3.*point(t - 3*h)
+            + 15/4.*point(t - 4*h) - 6/5.*point(t - 5*h) + 1/6.*point(t - 6*h)) / h;
     else
-        P = (1/280.*get_point(t - 4*h) - 4/105.*get_point(t - 3*h) + 1/5.*get_point(t - 2*h) - 4/5.*get_point(t - h)
-            + 4/5.*get_point(t + h) - 1/5.*get_point(t + 2*h) + 4/105.*get_point(t + 3*h) - 1/280.*get_point(t + 4*h)) / h;
+        P = (1/280.*point(t - 4*h) - 4/105.*point(t - 3*h) + 1/5.*point(t - 2*h) - 4/5.*point(t - h)
+            + 4/5.*point(t + h) - 1/5.*point(t + 2*h) + 4/105.*point(t + 3*h) - 1/280.*point(t + 4*h)) / h;
 
     return std::make_pair(P.x1, P.x2);
 }
@@ -198,7 +237,7 @@ double Curve::Integrate_curve(unsigned long long n, double h){
         // первая производная каждой функции в точке x2
         std::pair<double, double> D3 = first_derivative(x2, h);
 
-        // значения целевой функции в узлах сетки
+        // значения целевой функции в узлах сетки   
         double f_1 = sqrt(pow(D1.first, 2) + pow(D1.second, 2));
         double f_2 = sqrt(pow(D2.first, 2) + pow(D2.second, 2));
         double f_3 = sqrt(pow(D3.first, 2) + pow(D3.second, 2));
@@ -217,7 +256,7 @@ double Curve::SightAngle(double t, Point P) {
     Point T = get_point(t);
 
     // возврат значения угла между точкой визирования P и точкой кривой T
-    return atan( (P.x2 - T.x2) / (P.x1 - T.x1) );
+    return atan((P.x2 - T.x2) / (P.x1 - T.x1));
 }
 
 // вычисление разности между углом визирования из точки P на точку кривой, соответствующей параметру t,
@@ -228,7 +267,7 @@ double Curve::ScanFunction(double t, Point P, double h) {
     double NormalAngle = atan(-der.first / der.second);     // угол вектора нормали к кривой в точке t
 
     // возврат разности углов
-    return abs(NormalAngle - Sight); 
+    return abs(NormalAngle - Sight);
 }
 
 // метод, возвращающий наименование кривой.

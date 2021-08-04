@@ -1,12 +1,12 @@
 ﻿#ifndef Curve_H
 #define Curve_H
-
 #include <utility>
 #include <functional>
 #include <cmath>
 #include <string>  
 #include "Point.h"
 #include "Vector.h"
+#include "CoordinateSystem.h"
 const double PI = 3.141592653589793238463;
 
 // абстрактный базовый класс двумерной параметрически заданной кривой,
@@ -21,20 +21,29 @@ class Curve
 {
 	
 protected:
-	
+
+	// тип системы координат
+	type_of_coordinate_system coordinate_system;
+
 	// начальное и конечное значение параметра
 	double t_begin;
 	double t_end;
 
 public:
 		// конструктор класса
-		Curve(double t_begin_ = 0, double t_end_ = 1):
-			t_begin(t_begin_), t_end(t_end_)
+		Curve(type_of_coordinate_system CS = cartesian, double t_begin_ = 0, double t_end_ = 1):
+			t_begin(t_begin_), t_end(t_end_), coordinate_system(CS)
 		{
 		};
 
 		// вычисление точки кривой, соответствующей заданному параметру t
 		virtual Point get_point(double t) = 0;
+
+		// преобразование в локальную систему координат точек двух функций x=x(t) и y=y(t)
+		Point local_point(Point P);
+
+		// кооординаты функции x=x(t) и y=y(t) в декартовой системе координат
+		virtual Point point(double t);
 
 		// Возврат локальной системы координат в точке, соответствующей параметру t.
 		// Локальная система координат задается вектором нормали и касательной к кривой в данной точке.
@@ -51,7 +60,7 @@ public:
 
 		// вычисление длины кривой по области определения параметра t от t_begin до t_end
 		// с точность eps и шагом h при вычислении конечной разности функции
-		virtual double get_length(double eps = 1e-6,   double h = 1e-6);
+		virtual double get_length(double eps = 1e-8,   double h = 1e-6);
 
 		// Вычисление проекции точки P на кривую с точностью eps с помощью варьирования
 		// параметра t от от t_begin до t_end с шагом h.
@@ -68,7 +77,7 @@ public:
 		// метод, возвращающий наименование кривой.
 		virtual std::string get_name();
 		
-private:
+protected:
 
 	// вспомогательные методы
 
