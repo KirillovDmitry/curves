@@ -16,12 +16,12 @@ int main()
 
     // создание кривых разных типов и занесение их в вектор
     type_of_coordinate_system CS_1(cartesian);
-    Curves.push_back(std::make_shared<LineCurve>(LineCurve(CS_1, 1, 3, 1, 0)) );
-    Curves.push_back(std::make_shared<QuadraticCurve>(QuadraticCurve(CS_1, 1, 3, 4, 0, 0)));
-    Curves.push_back(std::make_shared<SinCurve>(SinCurve(CS_1, 1, 3, 1, 1, 0)));
-    Curves.push_back(std::make_shared<CosCurve>(CosCurve(CS_1, 1, 3, 1, 1, 0)));
-    Curves.push_back(std::make_shared<EllipsCurve>(EllipsCurve(CS_1, 1, 3, 1, 2, 1, 0)));
-    Curves.push_back(std::make_shared<CircuitCurve>(CircuitCurve(CS_1, 1, 3, 1, 1, 0)));
+    Curves.push_back(std::make_shared<LineCurve>(LineCurve(CS_1, 0, 3, 1, 0)) );
+    Curves.push_back(std::make_shared<QuadraticCurve>(QuadraticCurve(CS_1, 0, 3, 4, 0, 0)));
+    Curves.push_back(std::make_shared<SinCurve>(SinCurve(CS_1, 0, 3, 1, 1, 0)));
+    Curves.push_back(std::make_shared<CosCurve>(CosCurve(CS_1, 0, 3, 1, 1, 0)));
+    Curves.push_back(std::make_shared<EllipsCurve>(EllipsCurve(CS_1, 0, 3, 1, 2, 1, 0)));
+    Curves.push_back(std::make_shared<CircuitCurve>(CircuitCurve(CS_1, 0, 3, 1, 1, 0)));
 
     double t = 0.5;
 
@@ -59,7 +59,7 @@ int main()
 
     std::cout << "---------------" << std::endl;
 
-    Point P(2, 3);
+    Point P(3, 1);
     // вывод в консоль проекции точки P на кривую
     for (unsigned int i = 0; i < Curves.size(); ++i)
         std::cout << "Projection of a point " << "(" << P.x1 << ", " << P.x2 << ")" <<
@@ -85,12 +85,12 @@ int main()
     
     Curves_spherical.reserve(10);
 
-    Curves_spherical.push_back(std::make_shared<LineCurve>(LineCurve(CS_2, 1, 3, 1, 0)));
-    Curves_spherical.push_back(std::make_shared<QuadraticCurve>(QuadraticCurve(CS_2, 1, 3, 4, 0, 0)));
-    Curves_spherical.push_back(std::make_shared<SinCurve>(SinCurve(CS_2, 1, 3, 1, 1, 0)));
-    Curves_spherical.push_back(std::make_shared<CosCurve>(CosCurve(CS_2, 1, 3, 1, 1, 0)));
-    Curves_spherical.push_back(std::make_shared<EllipsCurve>(EllipsCurve(CS_2, 1, 3, 1, 2, 1, 0)));
-    Curves_spherical.push_back(std::make_shared<CircuitCurve>(CircuitCurve(CS_2, 1, 3, 1, 1, 0)));
+    Curves_spherical.push_back(std::make_shared<LineCurve>(LineCurve(CS_2, 0, 3, 1, 0)));
+    Curves_spherical.push_back(std::make_shared<QuadraticCurve>(QuadraticCurve(CS_2, 0, 3, 4, 0, 0)));
+    Curves_spherical.push_back(std::make_shared<SinCurve>(SinCurve(CS_2, 0, 3, 1, 1, 0)));
+    Curves_spherical.push_back(std::make_shared<CosCurve>(CosCurve(CS_2, 0, 3, 1, 1, 0)));
+    Curves_spherical.push_back(std::make_shared<EllipsCurve>(EllipsCurve(CS_2, 0, 3, 1, 2, 1, 0)));
+    Curves_spherical.push_back(std::make_shared<CircuitCurve>(CircuitCurve(CS_2, 0, 3, 1, 1, 0)));
     
     std::vector<double> Lengths_spherical;
     
